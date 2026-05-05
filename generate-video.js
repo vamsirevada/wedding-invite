@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
 const { execSync } = require('child_process');
 const fs = require('fs');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 
 (async () => {
   if (!fs.existsSync('frames')) fs.mkdirSync('frames');
@@ -47,7 +48,7 @@ const fs = require('fs');
 
   await browser.close();
 
-  execSync(`ffmpeg -y -framerate 30 -i frames/frame_%04d.png \
+  execSync(`"${ffmpegPath}" -y -framerate 30 -i frames/frame_%04d.png \
     -c:v libx264 -pix_fmt yuv420p -vf scale=1080:1920 output.mp4`);
 
   console.log("✅ Final video (no loop): output.mp4");
