@@ -7,7 +7,8 @@ const fs = require('fs');
 
   const browser = await puppeteer.launch({
     headless: "new",
-    defaultViewport: { width: 360, height: 640 }
+    defaultViewport: { width: 360, height: 640 },
+    args: ['--no-sandbox', '--disable-setuid-sandbox']
   });
 
   const page = await browser.newPage();
