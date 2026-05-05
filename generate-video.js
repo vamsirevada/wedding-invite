@@ -14,8 +14,19 @@ const fs = require('fs');
   const page = await browser.newPage();
   await page.goto('file://' + __dirname + '/save_the_date_v5.html');
 
-  // wait for initial render
-  await new Promise(r => setTimeout(r, 2000));
+  // Disable infinite looping — force all CSS animations to run only once
+  await page.evaluate(() => {
+    const style = document.createElement('style');
+    style.innerHTML = `
+      * {
+        animation-iteration-count: 1 !important;
+      }
+    `;
+    document.head.appendChild(style);
+  });
+
+  // wait for animations to start clean
+  await new Promise(r => setTimeout(r, 1000));
 
   const duration = 28; // seconds
   const fps = 30;
@@ -39,5 +50,5 @@ const fs = require('fs');
   execSync(`ffmpeg -y -framerate 30 -i frames/frame_%04d.png \
     -c:v libx264 -pix_fmt yuv420p -vf scale=1080:1920 output.mp4`);
 
-  console.log("✅ Correct speed video generated: output.mp4");
+  console.log("✅ Final video (no loop): output.mp4");
 })();
